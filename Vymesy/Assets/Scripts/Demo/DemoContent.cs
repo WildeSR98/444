@@ -58,6 +58,17 @@ namespace Vymesy.Demo
             return go;
         }
 
+        /// <summary>
+        /// Hostile-to-player variant. Same straight-line projectile but checks PlayerHealth
+        /// on collisions instead of EnemyHealth (used by EnemyAIBoss radial pattern).
+        /// </summary>
+        public GameObject MakeEnemyProjectilePrefab(string poolKey, Color color)
+        {
+            var go = NewProjectileSkeleton(poolKey, color, DemoSprites.Shape.Diamond, 16);
+            go.AddComponent<EnemyProjectile>();
+            return go;
+        }
+
         private static GameObject NewProjectileSkeleton(string name, Color color, DemoSprites.Shape shape, int size)
         {
             var go = new GameObject(name);

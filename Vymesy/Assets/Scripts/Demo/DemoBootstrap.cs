@@ -167,6 +167,7 @@ namespace Vymesy.Demo
             ProjectilesManager.Instance.Register("proj_chain", _content.MakeProjectilePrefab("proj_chain", new Color(0.5f, 0.85f, 1f)), prewarm: 16);
             ProjectilesManager.Instance.Register("proj_orbit", _content.MakeOrbitProjectilePrefab("proj_orbit", new Color(0.85f, 0.6f, 1f)), prewarm: 8);
             ProjectilesManager.Instance.Register("proj_homing", _content.MakeHomingProjectilePrefab("proj_homing", new Color(1f, 0.4f, 0.4f)), prewarm: 16);
+            ProjectilesManager.Instance.Register("proj_enemy", _content.MakeEnemyProjectilePrefab("proj_enemy", new Color(0.85f, 0.25f, 0.45f)), prewarm: 24);
 
             // Enemy roster.
             foreach (var e in _content.BuildEnemyRoster())
@@ -176,16 +177,20 @@ namespace Vymesy.Demo
             foreach (var s in _content.BuildStartingSkills()) skills.Equip(s);
 
             // Tower catalog (auto-spawn one Circle tower at origin so the player has help).
-            foreach (var t in _content.BuildTowerCatalog()) towers.AddCatalogEntry(t.Definition, t.Weight);
-            var firstTower = _content.BuildTowerCatalog()[0].Definition;
-            towers.SpawnTower(firstTower, Vector3.zero);
+            // Cache the lists — `Build*Catalog()` allocates fresh ScriptableObjects/GameObjects on
+            // each call, so a second invocation would leak instances and the equipped gem at slot 0
+            // would not match any registered catalog entry (breaking GemsManager.Reroll).
+            var towerCatalog = _content.BuildTowerCatalog();
+            foreach (var t in towerCatalog) towers.AddCatalogEntry(t.Definition, t.Weight);
+            if (towerCatalog.Count > 0) towers.SpawnTower(towerCatalog[0].Definition, Vector3.zero);
 
             // Items + gems pools and starting gem.
             loot?.SetItemPool(_content.BuildItemPool());
             loot?.SetBaseItemChance(0.07f);
 
-            foreach (var g in _content.BuildGemCatalog()) gems.AddCatalogEntry(g);
-            gems.Equip(0, _content.BuildGemCatalog()[0], level: 3);
+            var gemCatalog = _content.BuildGemCatalog();
+            foreach (var g in gemCatalog) gems.AddCatalogEntry(g);
+            if (gemCatalog.Count > 0) gems.Equip(0, gemCatalog[0], level: 3);
 
             // Meta tree + achievements.
             foreach (var n in _content.BuildTreeNodes()) tree.AddNode(n);

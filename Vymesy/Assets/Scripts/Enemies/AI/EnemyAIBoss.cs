@@ -16,7 +16,7 @@ namespace Vymesy.Enemies.AI
         [SerializeField] private int _bulletsPerPattern = 12;
         [SerializeField] private float _bulletSpeed = 4f;
         [SerializeField] private float _minionInterval = 8f;
-        [SerializeField] private string _projectilePoolKey = "proj_demo";
+        [SerializeField] private string _projectilePoolKey = "proj_enemy";
 
         private Rigidbody2D _rb;
         private EnemyDefinition _def;

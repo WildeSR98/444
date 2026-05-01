@@ -61,7 +61,7 @@ namespace Vymesy.Achievements
         {
             if (!GameManager.HasInstance) return;
             var data = GameManager.Instance.PlayerData;
-            int progress = _counters[type];
+            int progress = _counters.TryGetValue(type, out var p) ? p : 0;
             for (int i = 0; i < _achievements.Count; i++)
             {
                 var a = _achievements[i];

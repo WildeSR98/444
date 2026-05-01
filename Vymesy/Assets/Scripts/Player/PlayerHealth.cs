@@ -19,8 +19,19 @@ namespace Vymesy.Player
         public void Bind(PlayerStats stats)
         {
             _stats = stats;
+            float oldMax = MaxHealth;
             MaxHealth = stats.MaxHealth;
-            CurrentHealth = MaxHealth;
+            // First-time bind (or zeroed from death): full heal. Otherwise scale current HP
+            // proportionally to the new MaxHealth so stat-rebuilds (modifier add/remove,
+            // gem reroll, meta-tree node) don't trivially restore health on every change.
+            if (oldMax <= 0f || CurrentHealth <= 0f)
+            {
+                CurrentHealth = MaxHealth;
+            }
+            else
+            {
+                CurrentHealth = Mathf.Min(CurrentHealth * (MaxHealth / oldMax), MaxHealth);
+            }
         }
 
         public void RestoreFull()

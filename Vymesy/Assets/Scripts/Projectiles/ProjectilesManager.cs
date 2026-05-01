@@ -45,6 +45,8 @@ namespace Vymesy.Projectiles
             if (p != null) { p.Configure(this, key, dir, speed, range, dmg); return; }
             var hp = go.GetComponent<HomingProjectile>();
             if (hp != null) { hp.Configure(this, key, dir, speed, range, dmg); return; }
+            var ep = go.GetComponent<EnemyProjectile>();
+            if (ep != null) { ep.Configure(this, key, dir, speed, range, dmg); return; }
             Debug.LogWarning($"[ProjectilesManager] Prefab for '{key}' has no Projectile component.");
             _pooler.Return(key, go);
         }

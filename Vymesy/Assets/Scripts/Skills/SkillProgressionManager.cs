@@ -52,6 +52,7 @@ namespace Vymesy.Skills
             Level = 1;
             CurrentXP = 0;
             XPToNext = _baseXpToNext;
+            EventBus.Unsubscribe<EnemyKilledEvent>(HandleKilled);
             EventBus.Subscribe<EnemyKilledEvent>(HandleKilled);
             OnXPChanged?.Invoke();
         }

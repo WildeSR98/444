@@ -36,9 +36,19 @@ namespace Vymesy.Enemies
         public void SetAscensionMultiplier(float m) => AscensionMultiplier = Mathf.Max(0.1f, m);
 
         private readonly Dictionary<int, EnemyController> _alive = new Dictionary<int, EnemyController>();
+        // Deferred-removal queue: filled by OnEnemyDied during AoE iteration, drained at end of Update.
+        // Prevents InvalidOperationException when AoE damage kills enemies mid-foreach.
+        private readonly List<PendingRemoval> _pendingRemovals = new List<PendingRemoval>();
         private float _spawnTimer;
         private bool _spawning;
         private int _difficultyWave;
+
+        private struct PendingRemoval
+        {
+            public int InstanceId;
+            public string PoolKey;
+            public GameObject GameObject;
+        }
 
         private void Awake()
         {
@@ -104,6 +114,7 @@ namespace Vymesy.Enemies
 
         private void Update()
         {
+            DrainPendingRemovals();
             if (!_spawning || _target == null) return;
             if (_alive.Count >= _maxAlive) return;
 
@@ -114,6 +125,25 @@ namespace Vymesy.Enemies
                 _spawnTimer = 0f;
                 SmartSpawn();
             }
+        }
+
+        private void LateUpdate()
+        {
+            // Late-update drain catches deaths that occurred during other systems' updates
+            // (towers, skill triggers) so the dictionary is consistent before the next frame.
+            DrainPendingRemovals();
+        }
+
+        private void DrainPendingRemovals()
+        {
+            if (_pendingRemovals.Count == 0) return;
+            for (int i = 0; i < _pendingRemovals.Count; i++)
+            {
+                var r = _pendingRemovals[i];
+                _alive.Remove(r.InstanceId);
+                if (r.GameObject != null && _pooler != null) _pooler.Return(r.PoolKey, r.GameObject);
+            }
+            _pendingRemovals.Clear();
         }
 
         private void SmartSpawn()
@@ -169,8 +199,15 @@ namespace Vymesy.Enemies
         public void OnEnemyDied(EnemyController ctrl, string poolKey)
         {
             if (ctrl == null) return;
-            _alive.Remove(ctrl.GetInstanceID());
-            _pooler.Return(poolKey, ctrl.gameObject);
+            // Defer the dictionary mutation until the next Update tick. Synchronous removal
+            // here would corrupt any foreach over AliveEnemies that triggered the death
+            // (e.g. AoETower, AuraTower, AoESkill, NovaSkill, PoisonTower).
+            _pendingRemovals.Add(new PendingRemoval
+            {
+                InstanceId = ctrl.GetInstanceID(),
+                PoolKey = poolKey,
+                GameObject = ctrl.gameObject,
+            });
         }
 
         private EnemyEntry PickEntry()
