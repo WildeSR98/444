@@ -32,8 +32,34 @@ namespace Vymesy.Player
         {
             Currency.Reset();
             _modifiers.Clear();
+            ConsumeNextRunBoosts();
+            ApplyAscensionPenalty();
             RebuildStats();
             if (_health != null) _health.RestoreFull();
+        }
+
+        private void ConsumeNextRunBoosts()
+        {
+            var data = Vymesy.Core.GameManager.HasInstance ? Vymesy.Core.GameManager.Instance.PlayerData : null;
+            if (data == null || data.NextRunBoosts == null) return;
+            for (int i = 0; i < data.NextRunBoosts.Count; i++)
+            {
+                if (data.NextRunBoosts[i] == null) continue;
+                _modifiers.Add(data.NextRunBoosts[i]);
+            }
+            data.NextRunBoosts.Clear();
+        }
+
+        private void ApplyAscensionPenalty()
+        {
+            var data = Vymesy.Core.GameManager.HasInstance ? Vymesy.Core.GameManager.Instance.PlayerData : null;
+            if (data == null || data.AscensionLevel <= 0) return;
+            // Player gets a small permanent bonus to compensate for harder enemies.
+            _modifiers.Add(new PlayerStatsModifier
+            {
+                MaxHealth = data.AscensionLevel * 10f,
+                DamageMultiplier = data.AscensionLevel * 0.05f,
+            });
         }
 
         public void AddModifier(PlayerStatsModifier mod)

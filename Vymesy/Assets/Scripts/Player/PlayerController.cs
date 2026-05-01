@@ -15,6 +15,10 @@ namespace Vymesy.Player
         public Vector2 AimDirection => _aimDirection;
         public Vector2 Velocity => _rb != null ? GetRbVelocity() : Vector2.zero;
 
+        // Optional virtual joystick (mobile). When set, its <see cref="ITouchInputSource.Read"/>
+        // is summed with keyboard input so the same controller works on PC and touch.
+        public ITouchInputSource TouchInput { get; set; }
+
         private Vector2 GetRbVelocity()
         {
 #if UNITY_6000_0_OR_NEWER
@@ -51,8 +55,14 @@ namespace Vymesy.Player
         {
             float h = Input.GetAxisRaw("Horizontal");
             float v = Input.GetAxisRaw("Vertical");
-            _moveInput = new Vector2(h, v);
-            if (_moveInput.sqrMagnitude > 1f) _moveInput.Normalize();
+            Vector2 input = new Vector2(h, v);
+            if (TouchInput != null)
+            {
+                Vector2 t = TouchInput.Read();
+                if (t.sqrMagnitude > input.sqrMagnitude) input = t;
+            }
+            if (input.sqrMagnitude > 1f) input.Normalize();
+            _moveInput = input;
             if (_moveInput.sqrMagnitude > _inputDeadzone * _inputDeadzone)
             {
                 _aimDirection = _moveInput.normalized;

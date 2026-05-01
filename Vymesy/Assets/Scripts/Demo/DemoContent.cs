@@ -234,6 +234,37 @@ namespace Vymesy.Demo
             return skills;
         }
 
+        /// <summary>
+        /// Skills not equipped at run start but available as level-up unlocks
+        /// (offered by <see cref="Vymesy.Skills.SkillUpgradeFactory"/>).
+        /// </summary>
+        public List<SkillBase> BuildUnlockableSkills()
+        {
+            var skills = new List<SkillBase>();
+
+            var nova = ScriptableObject.CreateInstance<NovaSkill>();
+            nova.name = "Тёмная нова";
+            nova.DisplayName = "Тёмная нова";
+            nova.Description = "Каждые 6 сек волна расходится во все стороны.";
+            nova.Cooldown = 6f;
+            nova.BaseDamage = 9f;
+            nova.ExpansionSpeed = 9f;
+            nova.MaxRadius = 7f;
+            nova.RingThickness = 0.6f;
+            skills.Add(nova);
+
+            var buff = ScriptableObject.CreateInstance<BuffSkill>();
+            buff.name = "Зов света";
+            buff.DisplayName = "Зов света";
+            buff.Description = "Временный +25% урона и +1 MoveSpeed на 8 сек.";
+            buff.Cooldown = 18f;
+            buff.Duration = 8f;
+            buff.Modifier = new PlayerStatsModifier { DamageMultiplier = 0.25f, MoveSpeed = 1f };
+            skills.Add(buff);
+
+            return skills;
+        }
+
         // ---------- Towers ----------
 
         public List<TowerCatalogEntry> BuildTowerCatalog()

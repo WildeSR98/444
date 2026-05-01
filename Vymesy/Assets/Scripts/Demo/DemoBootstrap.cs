@@ -10,8 +10,12 @@ using Vymesy.MetaTree;
 using Vymesy.Pooling;
 using Vymesy.Player;
 using Vymesy.Projectiles;
+using Vymesy.Biome;
+using Vymesy.Localization;
+using Vymesy.Save;
 using Vymesy.Skills;
 using Vymesy.Towers;
+using Vymesy.UI;
 using Vymesy.VFX;
 
 namespace Vymesy.Demo
@@ -42,6 +46,7 @@ namespace Vymesy.Demo
         {
             EnsureBackground();
             _game = GameManager.Instance; // creates instance if missing
+            LocalizationManager.SetLanguage(_game.PlayerData != null ? _game.PlayerData.Language : LocalizationManager.DefaultLanguage);
             _player = BuildPlayer();
             BuildCameraRig(_player.transform);
 
@@ -124,6 +129,11 @@ namespace Vymesy.Demo
             EnsureChild<TreeManager>(rm);
             EnsureChild<AchievementsSystem>(rm);
 
+            // Phase 2 systems.
+            EnsureChild<SkillProgressionManager>(rm);
+            EnsureChild<WaveDirector>(rm);
+            EnsureChild<BiomeManager>(rm);
+
             // Ensure singletons exist.
             _ = ProjectilesManager.Instance;
             _ = AudioManager.Instance;
@@ -186,6 +196,18 @@ namespace Vymesy.Demo
         {
             var hudGo = new GameObject("DemoHUD");
             hudGo.AddComponent<DemoHUD>();
+
+            // Phase 2 IMGUI overlays.
+            var levelUp = hudGo.AddComponent<LevelUpModal>();
+            levelUp.SetUnlockPool(_content.BuildUnlockableSkills());
+            hudGo.AddComponent<AltarShop>();
+            hudGo.AddComponent<StatsScreen>();
+            hudGo.AddComponent<TouchJoystick>();
+
+            // Wire the joystick into the player so mobile builds receive movement input.
+            var ctrl = _player != null ? _player.GetComponent<PlayerController>() : null;
+            var joystick = hudGo.GetComponent<TouchJoystick>();
+            if (ctrl != null && joystick != null) ctrl.TouchInput = joystick;
         }
     }
 }

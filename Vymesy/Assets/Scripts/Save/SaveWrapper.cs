@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Vymesy.Player;
 
 namespace Vymesy.Save
 {
@@ -26,6 +27,12 @@ namespace Vymesy.Save
         public List<string> UnlockedAchievements = new List<string>();
         public List<SerializedGem> Gems = new List<SerializedGem>();
 
+        public List<PlayerStatsModifier> NextRunBoosts = new List<PlayerStatsModifier>();
+        public int AscensionLevel;
+        public int HighestAscensionCleared;
+        public string Language = "ru";
+        public List<RunHistoryEntry> RunHistory = new List<RunHistoryEntry>();
+
         // Dictionary serialized as parallel arrays.
         public List<string> AzrarKeys = new List<string>();
         public List<int> AzrarValues = new List<int>();
@@ -49,6 +56,11 @@ namespace Vymesy.Save
                 UnlockedTreeNodes = new List<string>(data.UnlockedTreeNodes),
                 UnlockedAchievements = new List<string>(data.UnlockedAchievements),
                 Gems = new List<SerializedGem>(data.Gems),
+                NextRunBoosts = new List<PlayerStatsModifier>(data.NextRunBoosts),
+                AscensionLevel = data.AscensionLevel,
+                HighestAscensionCleared = data.HighestAscensionCleared,
+                Language = data.Language,
+                RunHistory = new List<RunHistoryEntry>(data.RunHistory),
             };
             foreach (var kv in data.AzrarLevels)
             {
@@ -75,6 +87,11 @@ namespace Vymesy.Save
             data.UnlockedTreeNodes = new List<string>(UnlockedTreeNodes ?? new List<string>());
             data.UnlockedAchievements = new List<string>(UnlockedAchievements ?? new List<string>());
             data.Gems = new List<SerializedGem>(Gems ?? new List<SerializedGem>());
+            data.NextRunBoosts = new List<PlayerStatsModifier>(NextRunBoosts ?? new List<PlayerStatsModifier>());
+            data.AscensionLevel = AscensionLevel;
+            data.HighestAscensionCleared = HighestAscensionCleared;
+            data.Language = string.IsNullOrEmpty(Language) ? "ru" : Language;
+            data.RunHistory = new List<RunHistoryEntry>(RunHistory ?? new List<RunHistoryEntry>());
             data.AzrarLevels = new Dictionary<string, int>();
             int n = Math.Min(AzrarKeys?.Count ?? 0, AzrarValues?.Count ?? 0);
             for (int i = 0; i < n; i++) data.AzrarLevels[AzrarKeys[i]] = AzrarValues[i];

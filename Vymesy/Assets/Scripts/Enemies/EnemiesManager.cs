@@ -31,6 +31,9 @@ namespace Vymesy.Enemies
         [SerializeField] private ObjectPooler _pooler;
 
         public IReadOnlyDictionary<int, EnemyController> AliveEnemies => _alive;
+        public float AscensionMultiplier { get; private set; } = 1f;
+
+        public void SetAscensionMultiplier(float m) => AscensionMultiplier = Mathf.Max(0.1f, m);
 
         private readonly Dictionary<int, EnemyController> _alive = new Dictionary<int, EnemyController>();
         private float _spawnTimer;
@@ -131,9 +134,36 @@ namespace Vymesy.Enemies
                 _pooler.Return(key, go);
                 return;
             }
-            float multiplier = 1f + _difficultyWave * 0.15f;
+            float multiplier = (1f + _difficultyWave * 0.15f) * AscensionMultiplier;
             ctrl.Configure(entry.Definition, this, key, _target, multiplier);
             _alive[ctrl.GetInstanceID()] = ctrl;
+        }
+
+        /// <summary>
+        /// Force-spawn the first registered entry whose definition matches the given type.
+        /// Returns the spawned controller (or null if none registered / pool is full).
+        /// </summary>
+        public EnemyController SpawnSpecific(EnemyType type, Vector3? worldPos = null)
+        {
+            EnemyEntry entry = null;
+            for (int i = 0; i < _entries.Count; i++)
+            {
+                var e = _entries[i];
+                if (e == null || e.Definition == null) continue;
+                if (e.Definition.Type == type) { entry = e; break; }
+            }
+            if (entry == null || _target == null || _pooler == null) return null;
+
+            Vector3 position = worldPos ?? (_target.position + (Vector3)MathUtils.RandomInAnnulus(_spawnRingMin, _spawnRingMax));
+            string key = PoolKeyFor(entry);
+            var go = _pooler.Spawn(key, position, Quaternion.identity);
+            if (go == null) return null;
+            var ctrl = go.GetComponent<EnemyController>();
+            if (ctrl == null) { _pooler.Return(key, go); return null; }
+            float multiplier = (1f + _difficultyWave * 0.15f) * AscensionMultiplier;
+            ctrl.Configure(entry.Definition, this, key, _target, multiplier);
+            _alive[ctrl.GetInstanceID()] = ctrl;
+            return ctrl;
         }
 
         public void OnEnemyDied(EnemyController ctrl, string poolKey)

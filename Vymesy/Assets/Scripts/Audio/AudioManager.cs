@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Vymesy.Enemies;
+using Vymesy.Skills;
 using Vymesy.Utils;
 
 namespace Vymesy.Audio
@@ -16,6 +17,8 @@ namespace Vymesy.Audio
         [SerializeField] private AudioClip _playerHit;
         [SerializeField] private AudioClip _runEnd;
         [SerializeField] private AudioClip _runStart;
+        [SerializeField] private AudioClip _levelUp;
+        [SerializeField] private AudioClip _pickup;
 
         [Header("Music")]
         [SerializeField] private AudioClip _menuMusic;
@@ -30,10 +33,13 @@ namespace Vymesy.Audio
                 _musicSource = gameObject.AddComponent<AudioSource>();
                 _musicSource.loop = true;
             }
+            EnsureProceduralLibrary();
             EventBus.Subscribe<EnemyKilledEvent>(HandleEnemyKilled);
             EventBus.Subscribe<PlayerDamagedEvent>(HandlePlayerHit);
             EventBus.Subscribe<RunEndedEvent>(HandleRunEnded);
             EventBus.Subscribe<RunStartedEvent>(HandleRunStarted);
+            EventBus.Subscribe<LevelUpEvent>(HandleLevelUp);
+            EventBus.Subscribe<ItemPickedUpEvent>(HandleItemPickup);
         }
 
         protected override void OnDestroy()
@@ -42,7 +48,26 @@ namespace Vymesy.Audio
             EventBus.Unsubscribe<PlayerDamagedEvent>(HandlePlayerHit);
             EventBus.Unsubscribe<RunEndedEvent>(HandleRunEnded);
             EventBus.Unsubscribe<RunStartedEvent>(HandleRunStarted);
+            EventBus.Unsubscribe<LevelUpEvent>(HandleLevelUp);
+            EventBus.Unsubscribe<ItemPickedUpEvent>(HandleItemPickup);
             base.OnDestroy();
+        }
+
+        /// <summary>
+        /// Fills any unassigned <see cref="AudioClip"/> slots with procedurally generated SFX
+        /// so the demo plays sound even without bundled audio assets.
+        /// </summary>
+        private void EnsureProceduralLibrary()
+        {
+            if (_enemyDeath == null) _enemyDeath = ProceduralAudio.EnemyDeath();
+            if (_bossDeath == null) _bossDeath = ProceduralAudio.BossDeath();
+            if (_playerHit == null) _playerHit = ProceduralAudio.PlayerHit();
+            if (_runStart == null) _runStart = ProceduralAudio.RunStart();
+            if (_runEnd == null) _runEnd = ProceduralAudio.RunEnd();
+            if (_levelUp == null) _levelUp = ProceduralAudio.LevelUp();
+            if (_pickup == null) _pickup = ProceduralAudio.Pickup();
+            if (_menuMusic == null) _menuMusic = ProceduralAudio.MenuPad();
+            if (_runMusic == null) _runMusic = ProceduralAudio.RunPad();
         }
 
         public void PlayMenuMusic() => SetMusic(_menuMusic);
@@ -69,5 +94,7 @@ namespace Vymesy.Audio
         private void HandlePlayerHit(PlayerDamagedEvent _) => Play(_playerHit);
         private void HandleRunEnded(RunEndedEvent _) { Play(_runEnd); PlayMenuMusic(); }
         private void HandleRunStarted(RunStartedEvent _) { Play(_runStart); PlayRunMusic(); }
+        private void HandleLevelUp(LevelUpEvent _) => Play(_levelUp);
+        private void HandleItemPickup(ItemPickedUpEvent _) => Play(_pickup);
     }
 }

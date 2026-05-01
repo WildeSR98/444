@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Vymesy.Player;
 
 namespace Vymesy.Save
 {
@@ -31,6 +32,31 @@ namespace Vymesy.Save
         public List<SerializedGem> Gems = new List<SerializedGem>();
 
         public Dictionary<string, int> AzrarLevels = new Dictionary<string, int>();
+
+        // One-shot boosts applied at the next run start, then cleared.
+        public List<PlayerStatsModifier> NextRunBoosts = new List<PlayerStatsModifier>();
+
+        // NG+ ascension level — increases enemy stats and unlocks bonus rewards.
+        public int AscensionLevel = 0;
+        public int HighestAscensionCleared = 0;
+
+        // Active language ("ru" / "en").
+        public string Language = "ru";
+
+        // Persisted run history for the stats screen.
+        public List<RunHistoryEntry> RunHistory = new List<RunHistoryEntry>();
+    }
+
+    [Serializable]
+    public class RunHistoryEntry
+    {
+        public long EndTimeUnix;
+        public bool Victory;
+        public int WaveReached;
+        public int EnemiesKilled;
+        public int GoldCollected;
+        public float DurationSeconds;
+        public int AscensionLevel;
     }
 
     [Serializable]

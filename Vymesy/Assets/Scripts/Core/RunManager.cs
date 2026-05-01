@@ -57,9 +57,12 @@ namespace Vymesy.Core
             EnsureManagers();
             RunTime = 0f;
             RunPointsEarned = 0;
+            EnemiesKilledThisRun = 0;
             Wave = 0;
             IsRunStarted = true;
             Player.ResetForRun();
+            var data = GameManager.Instance.PlayerData;
+            if (data != null) Enemies.SetAscensionMultiplier(1f + 0.20f * data.AscensionLevel);
             Enemies.BeginSpawning();
             Skills.BeginRun();
             Towers.BeginRun();
@@ -84,11 +87,38 @@ namespace Vymesy.Core
             data.MetaPoints += RunPointsEarned;
             data.RunsPlayed += 1;
             if (victory) data.RunsWon += 1;
+            int goldEarned = 0;
+            int shardsEarned = 0;
+            if (Player != null)
+            {
+                goldEarned = Player.Currency.Get(CurrencyType.Gold);
+                shardsEarned = Player.Currency.Get(CurrencyType.SoulShards);
+                data.Gold += goldEarned;
+                data.SoulShards += shardsEarned;
+            }
+            if (Wave > data.HighestWave) data.HighestWave = Wave;
+            if (victory && data.AscensionLevel > data.HighestAscensionCleared) data.HighestAscensionCleared = data.AscensionLevel;
+            data.RunHistory.Add(new RunHistoryEntry
+            {
+                EndTimeUnix = System.DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Victory = victory,
+                WaveReached = Wave,
+                EnemiesKilled = EnemiesKilledThisRun,
+                GoldCollected = goldEarned,
+                DurationSeconds = RunTime,
+                AscensionLevel = data.AscensionLevel,
+            });
+            // Keep history bounded.
+            const int MaxHistory = 100;
+            if (data.RunHistory.Count > MaxHistory)
+                data.RunHistory.RemoveRange(0, data.RunHistory.Count - MaxHistory);
             SaveLoadManager.Save(data);
 
             EventBus.Publish(new RunEndedEvent(victory));
             OnRunEnd?.Invoke(victory);
         }
+
+        public int EnemiesKilledThisRun { get; private set; }
 
         private void Update()
         {
@@ -146,6 +176,7 @@ namespace Vymesy.Core
         private void HandleEnemyKilled(EnemyKilledEvent evt)
         {
             RunPointsEarned += 1;
+            EnemiesKilledThisRun += 1;
             if (Player != null) Player.AddCurrency(CurrencyType.Gold, evt.GoldReward);
         }
     }
