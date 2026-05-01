@@ -47,16 +47,14 @@ namespace Vymesy.Projectiles
             transform.position += (Vector3)(_velocity * Time.deltaTime);
             _travelled += step;
 
-            var hit = Physics2D.OverlapCircle(transform.position, _hitRadius, _enemyMask);
-            if (hit != null)
+            var hits = Physics2D.OverlapCircleAll(transform.position, _hitRadius, _enemyMask);
+            for (int i = 0; i < hits.Length; i++)
             {
-                var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
-                if (enemyHealth != null && enemyHealth.IsAlive)
-                {
-                    enemyHealth.TakeDamage(_damage);
-                    _hitsRemaining--;
-                    if (_hitsRemaining <= 0) { Despawn(); return; }
-                }
+                var enemyHealth = hits[i].GetComponentInParent<EnemyHealth>();
+                if (enemyHealth == null || !enemyHealth.IsAlive) continue;
+                enemyHealth.TakeDamage(_damage);
+                _hitsRemaining--;
+                if (_hitsRemaining <= 0) { Despawn(); return; }
             }
 
             if (_travelled >= _maxDistance) Despawn();

@@ -56,6 +56,28 @@ namespace Vymesy.Enemies
 
         public void SetTarget(Transform target) => _target = target;
 
+        /// <summary>
+        /// Runtime-friendly registration of an enemy entry. Used by DemoBootstrap and tools
+        /// that build the enemy roster procedurally instead of via the inspector.
+        /// </summary>
+        public void AddEntry(EnemyDefinition def, GameObject prefab, int spawnWeight = 10, int minWave = 0, int prewarm = 8)
+        {
+            if (def == null || prefab == null) return;
+            var entry = new EnemyEntry { Definition = def, Prefab = prefab, SpawnWeight = spawnWeight, MinWave = minWave };
+            _entries.Add(entry);
+            if (_pooler == null) _pooler = GetComponentInChildren<ObjectPooler>();
+            if (_pooler != null) _pooler.Register(PoolKeyFor(entry), prefab, prewarm);
+        }
+
+        public void ConfigureSpawn(float baseInterval, float minInterval, float ringMin, float ringMax, int maxAlive)
+        {
+            _baseSpawnInterval = baseInterval;
+            _minSpawnInterval = minInterval;
+            _spawnRingMin = ringMin;
+            _spawnRingMax = ringMax;
+            _maxAlive = maxAlive;
+        }
+
         public void BeginSpawning()
         {
             _spawning = true;

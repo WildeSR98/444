@@ -12,6 +12,11 @@ namespace Vymesy.Achievements
     {
         [SerializeField] private List<Achievement> _achievements = new List<Achievement>();
 
+        public void AddAchievement(Achievement a)
+        {
+            if (a != null && !_achievements.Contains(a)) _achievements.Add(a);
+        }
+
         private readonly Dictionary<AchievementType, int> _counters = new Dictionary<AchievementType, int>();
 
         private void OnEnable()

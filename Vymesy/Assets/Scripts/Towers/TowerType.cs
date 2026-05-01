@@ -6,5 +6,7 @@ namespace Vymesy.Towers
         Circle,
         Gold,
         Poison,
+        Lightning,
+        Aura,
     }
 }

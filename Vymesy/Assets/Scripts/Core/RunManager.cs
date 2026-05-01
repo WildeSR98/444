@@ -106,12 +106,30 @@ namespace Vymesy.Core
 
         private void EnsureManagers()
         {
+            // Reuse existing components in our hierarchy or anywhere in the scene before
+            // falling back to instantiation. Lets DemoBootstrap pre-create the managers.
+            Player = Player != null ? Player : FindAnywhere<PlayerManager>();
+            Enemies = Enemies != null ? Enemies : FindAnywhere<EnemiesManager>();
+            Skills = Skills != null ? Skills : FindAnywhere<SkillsManager>();
+            Towers = Towers != null ? Towers : FindAnywhere<TowersManager>();
+            Inventory = Inventory != null ? Inventory : FindAnywhere<InventoryManager>();
+            Gems = Gems != null ? Gems : FindAnywhere<GemsManager>();
+
             Player = SpawnIfMissing(Player, _playerManagerPrefab, nameof(PlayerManager));
             Enemies = SpawnIfMissing(Enemies, _enemiesManagerPrefab, nameof(EnemiesManager));
             Skills = SpawnIfMissing(Skills, _skillsManagerPrefab, nameof(SkillsManager));
             Towers = SpawnIfMissing(Towers, _towersManagerPrefab, nameof(TowersManager));
             Inventory = SpawnIfMissing(Inventory, _inventoryManagerPrefab, nameof(InventoryManager));
             Gems = SpawnIfMissing(Gems, _gemsManagerPrefab, nameof(GemsManager));
+        }
+
+        private static T FindAnywhere<T>() where T : MonoBehaviour
+        {
+#if UNITY_2023_1_OR_NEWER
+            return Object.FindFirstObjectByType<T>(FindObjectsInactive.Include);
+#else
+            return Object.FindObjectOfType<T>();
+#endif
         }
 
         private T SpawnIfMissing<T>(T existing, T prefab, string fallbackName) where T : MonoBehaviour

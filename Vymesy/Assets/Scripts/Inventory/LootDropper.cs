@@ -15,6 +15,13 @@ namespace Vymesy.Inventory
         [SerializeField] private List<ItemData> _itemPool = new List<ItemData>();
         [SerializeField, Range(0f, 1f)] private float _baseItemChance = 0.05f;
 
+        public void SetItemPool(IEnumerable<ItemData> pool)
+        {
+            _itemPool.Clear();
+            if (pool != null) _itemPool.AddRange(pool);
+        }
+        public void SetBaseItemChance(float chance) => _baseItemChance = Mathf.Clamp01(chance);
+
         private void OnEnable() => EventBus.Subscribe<EnemyKilledEvent>(HandleEnemyKilled);
         private void OnDisable() => EventBus.Unsubscribe<EnemyKilledEvent>(HandleEnemyKilled);
 

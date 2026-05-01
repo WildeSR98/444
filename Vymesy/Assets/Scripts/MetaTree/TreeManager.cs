@@ -10,6 +10,11 @@ namespace Vymesy.MetaTree
     {
         [SerializeField] private List<TreeNode> _allNodes = new List<TreeNode>();
 
+        public void AddNode(TreeNode node)
+        {
+            if (node != null && !_allNodes.Contains(node)) _allNodes.Add(node);
+        }
+
         public IReadOnlyList<TreeNode> AllNodes => _allNodes;
 
         public bool IsUnlocked(TreeNode node)

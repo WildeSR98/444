@@ -22,6 +22,12 @@ namespace Vymesy.Gems
             for (int i = 0; i < _slotCount; i++) _slots.Add(new GemSlot());
         }
 
+        public void AddCatalogEntry(GemData gem)
+        {
+            if (gem == null || _gemCatalog.Contains(gem)) return;
+            _gemCatalog.Add(gem);
+        }
+
         public void BeginRun() => ApplyAll();
         public void EndRun() { /* gems persist across runs through PlayerData */ }
 

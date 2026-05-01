@@ -9,7 +9,7 @@ namespace Vymesy.Enemies
     /// optional ranged variant fires projectiles when within range.
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
-    public class EnemyAI : MonoBehaviour
+    public class EnemyAI : MonoBehaviour, IEnemyAI
     {
         [SerializeField] private Rigidbody2D _rb;
 

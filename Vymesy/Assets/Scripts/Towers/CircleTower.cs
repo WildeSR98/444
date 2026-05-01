@@ -1,5 +1,6 @@
 using UnityEngine;
 using Vymesy.Damage;
+using Vymesy.Enemies;
 
 namespace Vymesy.Towers
 {
@@ -11,7 +12,7 @@ namespace Vymesy.Towers
         protected override void Tick()
         {
             float bestSqr = Definition.Range * Definition.Range;
-            Enemies.EnemyController best = null;
+            EnemyController best = null;
             Vector2 origin = transform.position;
             foreach (var kv in Enemies.AliveEnemies)
             {

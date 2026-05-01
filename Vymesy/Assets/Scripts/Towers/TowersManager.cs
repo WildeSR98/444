@@ -17,6 +17,13 @@ namespace Vymesy.Towers
         [SerializeField] private List<TowerEntry> _entries = new List<TowerEntry>();
         [SerializeField] private int _maxTowers = 8;
 
+        public void AddCatalogEntry(TowerDefinition def, int weight = 10)
+        {
+            if (def == null) return;
+            _entries.Add(new TowerEntry { Definition = def, Weight = weight });
+        }
+        public void SetMaxTowers(int max) => _maxTowers = Mathf.Max(1, max);
+
         private readonly List<TowerBase> _alive = new List<TowerBase>();
 
         public IReadOnlyList<TowerBase> AliveTowers => _alive;
