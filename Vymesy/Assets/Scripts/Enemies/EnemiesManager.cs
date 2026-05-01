@@ -110,6 +110,10 @@ namespace Vymesy.Enemies
                 _pooler.Return(KeyForController(kv.Value), kv.Value.gameObject);
             }
             _alive.Clear();
+            // Drop any deferred removals — their GameObjects were already returned above (or
+            // are being torn down with the run), so a later DrainPendingRemovals() call would
+            // double-return them to the pool, corrupting reuse on the next run.
+            _pendingRemovals.Clear();
         }
 
         private void Update()
