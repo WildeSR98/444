@@ -1,0 +1,33 @@
+# Unity build artifacts
+Library/
+Logs/
+Temp/
+Obj/
+Build/
+Builds/
+UserSettings/
+MemoryCaptures/
+
+# Visual Studio / Rider / VSCode
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+.vs/
+.idea/
+.vscode/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Crashlytics / IL2CPP
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+sysinfo.txt
+
+# Asset Store auto-installed packages
+[Aa]ssets/AssetStoreTools*
