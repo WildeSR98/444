@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Vymesy.Core;
@@ -16,7 +15,7 @@ namespace Vymesy.UI
         [SerializeField] private TreeManager _tree;
         [SerializeField] private GameObject _nodeButtonPrefab;
         [SerializeField] private Transform _nodeRoot;
-        [SerializeField] private TMP_Text _metaPointsLabel;
+        [SerializeField] private Text _metaPointsLabel;
 
         private readonly List<NodeButton> _buttons = new List<NodeButton>();
 
@@ -24,7 +23,7 @@ namespace Vymesy.UI
         {
             public TreeNode Node;
             public Button Button;
-            public TMP_Text Label;
+            public Text Label;
             public Image Frame;
         }
 
@@ -35,7 +34,7 @@ namespace Vymesy.UI
             {
                 var go = Instantiate(_nodeButtonPrefab, _nodeRoot);
                 var button = go.GetComponent<Button>();
-                var label = go.GetComponentInChildren<TMP_Text>();
+                var label = go.GetComponentInChildren<Text>();
                 var frame = go.GetComponent<Image>();
                 var captured = node;
                 if (button != null) button.onClick.AddListener(() => TryUnlock(captured));

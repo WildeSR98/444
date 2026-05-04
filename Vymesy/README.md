@@ -41,12 +41,31 @@ Vymesy/
 
 1. Установи **Unity 2022.3 LTS** или **Unity 6000.x LTS** через [Unity Hub](https://unity.com/download). При установке выбери модули Android/Windows/Mac по желанию.
 2. В Unity Hub → **Open** → укажи папку `Vymesy/` (именно её, не корень репо).
-3. Unity создаст `Library/`, импортирует пакеты из `Packages/manifest.json` и скомпилирует все скрипты из `Vymesy.asmdef`.
+3. Unity создаст `Library/`, импортирует пакеты из `Packages/manifest.json` и скомпилирует все скрипты.
 4. Если консоль ругается на `linearVelocity` (Unity 6 API) — игнорируй, скрипты переключаются автоматически через `#if UNITY_6000_0_OR_NEWER`.
 
 ---
 
-## Минимальная настройка сцены (быстрый старт)
+## Быстрый запуск демо
+
+1. В окне Project создай папку `Assets/Scenes`.
+2. `File → New Scene` → выбери `2D` / `Basic 2D`.
+3. `File → Save As...` → сохрани сцену как `Assets/Scenes/Game.unity`.
+4. В Hierarchy: правый клик → `Create Empty`.
+5. Переименуй объект в `DemoBootstrap`.
+6. Выдели объект → Inspector → `Add Component` → найди `DemoBootstrap` → выбери `Vymesy.Demo.DemoBootstrap`.
+7. Убедись, что `Auto Start Run` включён.
+8. Нажми Play.
+
+`DemoBootstrap` сам создаёт игрока, камеру, врагов, скиллы, башню, предметы и IMGUI-HUD без префабов и Canvas.
+
+Управление: `WASD` — движение, `R` — рестарт, `B` — алтарь, `F1` — статистика.
+
+Для сборки: `File → Build Settings...` → `Add Open Scenes` → выбери `PC, Mac & Linux Standalone` → `Build And Run`.
+
+---
+
+## Ручная настройка сцены
 
 1. Создай две сцены: `MainMenu` и `Game` (File → New Scene → 2D, сохрани в `Assets/Scenes/`).
 2. **`Game` сцена** — собери:
@@ -59,6 +78,20 @@ Vymesy/
    - Canvas с `HUDController`, `HealthBar`, `RunEndScreen`, `InventoryView`, опционально `MetaTreeView`.
 3. **`MainMenu` сцена** — Canvas с `MainMenuController`. В поле `Game Scene Name` вписать имя сцены `Game`.
 4. В **Build Settings** добавь обе сцены.
+
+---
+
+## Если Unity не скачивает пакеты
+
+Если видишь ошибку вида `Cannot connect to download.packages.unity.com (ECONNRESET)`, проверь, что firewall/VPN/proxy разрешает доступ к:
+
+```text
+https://download.packages.unity.com
+```
+
+Проект не требует TextMeshPro, Test Framework или IDE-пакетов для запуска демо. `Packages/manifest.json` оставлен минимальным, чтобы сцена с `DemoBootstrap` открывалась даже при проблемах с необязательными пакетами.
+
+Если Unity продолжает показывать старые ошибки после изменения пакетов, закрой Unity, удали папку `Library/` внутри `Vymesy/` и открой проект заново.
 
 ---
 
