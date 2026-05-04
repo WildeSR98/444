@@ -156,9 +156,9 @@ namespace Vymesy.Core
         private static T FindAnywhere<T>() where T : MonoBehaviour
         {
 #if UNITY_2023_1_OR_NEWER
-            return Object.FindFirstObjectByType<T>(FindObjectsInactive.Include);
+            return UnityEngine.Object.FindFirstObjectByType<T>(FindObjectsInactive.Include);
 #else
-            return Object.FindObjectOfType<T>();
+            return UnityEngine.Object.FindObjectOfType<T>();
 #endif
         }
 

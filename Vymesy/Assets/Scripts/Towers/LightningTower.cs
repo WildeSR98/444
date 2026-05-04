@@ -76,7 +76,7 @@ namespace Vymesy.Towers
             lr.startColor = new Color(0.6f, 0.8f, 1f, 0.95f);
             lr.endColor = new Color(0.6f, 0.8f, 1f, 0.2f);
             lr.sortingOrder = 8;
-            Object.Destroy(go, 0.18f);
+            UnityEngine.Object.Destroy(go, 0.18f);
         }
     }
 }

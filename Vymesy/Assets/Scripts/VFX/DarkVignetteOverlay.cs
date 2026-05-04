@@ -33,7 +33,7 @@ namespace Vymesy.VFX
 
             _quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
             _quad.name = "DarkVignetteOverlay";
-            Object.Destroy(_quad.GetComponent<Collider>());
+            UnityEngine.Object.Destroy(_quad.GetComponent<Collider>());
             _quad.transform.SetParent(transform, false);
             _quad.GetComponent<Renderer>().sharedMaterial = _material;
             FitQuadToCamera();
