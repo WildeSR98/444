@@ -365,6 +365,7 @@ namespace Vymesy.Demo
         private GameObject MakeTowerPrefab(string name, System.Type towerType, Color tint, DemoSprites.Shape shape)
         {
             var go = new GameObject(name);
+            go.SetActive(false);
             var sr = go.AddComponent<SpriteRenderer>();
             sr.sprite = DemoSprites.Get(shape, tint);
             sr.sortingOrder = 2;

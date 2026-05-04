@@ -49,6 +49,7 @@ namespace Vymesy.Towers
             if (rm == null) return null;
 
             var go = Instantiate(def.Prefab, position, Quaternion.identity, transform);
+            go.SetActive(true);
             var tower = go.GetComponent<TowerBase>();
             if (tower == null)
             {
