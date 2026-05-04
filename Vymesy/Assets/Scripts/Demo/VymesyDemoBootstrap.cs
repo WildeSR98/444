@@ -27,7 +27,7 @@ namespace Vymesy.Demo
     /// towers, achievements, meta nodes) without requiring any prefabs in the inspector.
     /// </summary>
     [DefaultExecutionOrder(-100)]
-    public class DemoBootstrap : MonoBehaviour
+    public class VymesyDemoBootstrap : MonoBehaviour
     {
         [Header("Demo Settings")]
         [SerializeField] private bool _autoStartRun = true;

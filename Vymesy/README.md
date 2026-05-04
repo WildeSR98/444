@@ -52,12 +52,12 @@ Vymesy/
 2. `File → New Scene` → выбери `2D` / `Basic 2D`.
 3. `File → Save As...` → сохрани сцену как `Assets/Scenes/Game.unity`.
 4. В Hierarchy: правый клик → `Create Empty`.
-5. Переименуй объект в `DemoBootstrap`.
-6. Выдели объект → Inspector → `Add Component` → найди `DemoBootstrap` → выбери `Vymesy.Demo.DemoBootstrap`.
+5. Переименуй объект в `VymesyDemoBootstrap`.
+6. Выдели объект → Inspector → `Add Component` → найди `VymesyDemoBootstrap` → выбери `Vymesy.Demo.VymesyDemoBootstrap`.
 7. Убедись, что `Auto Start Run` включён.
 8. Нажми Play.
 
-`DemoBootstrap` сам создаёт игрока, камеру, врагов, скиллы, башню, предметы и IMGUI-HUD без префабов и Canvas.
+`VymesyDemoBootstrap` сам создаёт игрока, камеру, врагов, скиллы, башню, предметы и IMGUI-HUD без префабов и Canvas.
 
 Управление: `WASD` — движение, `R` — рестарт, `B` — алтарь, `F1` — статистика.
 
@@ -89,9 +89,11 @@ Vymesy/
 https://download.packages.unity.com
 ```
 
-Проект не требует TextMeshPro, Test Framework или IDE-пакетов для запуска демо. `Packages/manifest.json` оставлен минимальным, чтобы сцена с `DemoBootstrap` открывалась даже при проблемах с необязательными пакетами.
+Проект не требует TextMeshPro, Test Framework или IDE-пакетов для запуска демо. `Packages/manifest.json` оставлен минимальным, чтобы сцена с `VymesyDemoBootstrap` открывалась даже при проблемах с необязательными пакетами.
 
 Если Unity продолжает показывать старые ошибки после изменения пакетов, закрой Unity, удали папку `Library/` внутри `Vymesy/` и открой проект заново.
+
+Если видишь `namespace 'Vymesy.Demo' already contains a definition for 'DemoBootstrap'`, в проекте остался старый/ручной скрипт `DemoBootstrap.cs`. Закрой Unity, удали или перенеси вне `Assets` все локальные `DemoBootstrap.cs`, затем используй компонент `VymesyDemoBootstrap`.
 
 ---
 

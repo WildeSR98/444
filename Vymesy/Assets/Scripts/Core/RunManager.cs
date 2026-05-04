@@ -137,7 +137,7 @@ namespace Vymesy.Core
         private void EnsureManagers()
         {
             // Reuse existing components in our hierarchy or anywhere in the scene before
-            // falling back to instantiation. Lets DemoBootstrap pre-create the managers.
+            // falling back to instantiation. Lets VymesyDemoBootstrap pre-create the managers.
             Player = Player != null ? Player : FindAnywhere<PlayerManager>();
             Enemies = Enemies != null ? Enemies : FindAnywhere<EnemiesManager>();
             Skills = Skills != null ? Skills : FindAnywhere<SkillsManager>();
