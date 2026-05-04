@@ -47,6 +47,7 @@ namespace Vymesy.Localization
         public static string T(string key, string arg0) => string.Format(T(key), arg0);
         public static string T(string key, object arg0) => string.Format(T(key), arg0);
         public static string T(string key, object arg0, object arg1) => string.Format(T(key), arg0, arg1);
+        public static string T(string key, object arg0, object arg1, object arg2) => string.Format(T(key), arg0, arg1, arg2);
 
         public static void Register(string lang, string key, string value)
         {
@@ -141,5 +142,6 @@ namespace Vymesy.Localization
         public static string T(string key) => LocalizationManager.T(key);
         public static string T(string key, object arg0) => LocalizationManager.T(key, arg0);
         public static string T(string key, object arg0, object arg1) => LocalizationManager.T(key, arg0, arg1);
+        public static string T(string key, object arg0, object arg1, object arg2) => LocalizationManager.T(key, arg0, arg1, arg2);
     }
 }

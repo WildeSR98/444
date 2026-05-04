@@ -82,7 +82,7 @@ namespace Vymesy.Skills
             lr.startColor = color;
             lr.endColor = new Color(color.r, color.g, color.b, 0.2f);
             lr.sortingOrder = 8;
-            Object.Destroy(go, lifetime);
+            UnityEngine.Object.Destroy(go, lifetime);
         }
     }
 }

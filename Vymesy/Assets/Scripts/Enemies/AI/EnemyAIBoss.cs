@@ -97,7 +97,7 @@ namespace Vymesy.Enemies.AI
         private void SummonMinions()
         {
             // Fire-and-forget: ask the singleton EnemiesManager to schedule a small wave at our position.
-            var em = Object.FindObjectOfType<EnemiesManager>();
+            var em = UnityEngine.Object.FindObjectOfType<EnemiesManager>();
             if (em == null) return;
             // Increment difficulty wave temporarily — cheap way to pull more enemies.
             em.SetDifficulty(em != null ? Mathf.Max(2, em.AliveEnemies.Count > 0 ? em.AliveEnemies.Count / 8 : 2) : 2);

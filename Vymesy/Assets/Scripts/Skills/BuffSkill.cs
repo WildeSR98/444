@@ -35,9 +35,9 @@ namespace Vymesy.Skills
             PlayerManager pm = null;
             if (ctx.Source != null) pm = ctx.Source.GetComponentInParent<PlayerManager>();
 #if UNITY_2023_1_OR_NEWER
-            if (pm == null) pm = Object.FindFirstObjectByType<PlayerManager>();
+            if (pm == null) pm = UnityEngine.Object.FindFirstObjectByType<PlayerManager>();
 #else
-            if (pm == null) pm = Object.FindObjectOfType<PlayerManager>();
+            if (pm == null) pm = UnityEngine.Object.FindObjectOfType<PlayerManager>();
 #endif
             if (pm == null) return;
 
