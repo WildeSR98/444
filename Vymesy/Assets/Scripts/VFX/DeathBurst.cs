@@ -17,11 +17,13 @@ namespace Vymesy.VFX
         [SerializeField] private float _scale = 0.16f;
 
         private EnemyHealth _health;
+        private EnemyController _controller;
         private SpriteRenderer _renderer;
 
         private void Awake()
         {
             _health = GetComponent<EnemyHealth>();
+            _controller = GetComponent<EnemyController>();
             _renderer = GetComponentInChildren<SpriteRenderer>();
         }
 
@@ -37,7 +39,8 @@ namespace Vymesy.VFX
 
         private void HandleDied()
         {
-            Color color = _renderer != null ? _renderer.color : Color.white;
+            Color color = _controller != null && _controller.Definition != null ? _controller.Definition.Tint :
+                (_renderer != null ? _renderer.color : Color.white);
             Vector3 origin = transform.position;
             for (int i = 0; i < _particles; i++)
             {
