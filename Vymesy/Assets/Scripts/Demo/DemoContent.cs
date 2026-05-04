@@ -193,7 +193,6 @@ namespace Vymesy.Demo
                                  type == EnemyType.Elite ? new Color(0.95f, 0.6f, 1f) :
                                                             new Color(1f, 0.95f, 0.4f));
             }
-            if (type == EnemyType.Shiny) prefab.AddComponent<SpritePulse>();
             return new EnemyEntry { Definition = def, Prefab = prefab, Weight = weight, MinWave = minWave };
         }
 
