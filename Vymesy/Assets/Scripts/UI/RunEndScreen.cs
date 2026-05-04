@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,8 +9,8 @@ namespace Vymesy.UI
     public class RunEndScreen : MonoBehaviour
     {
         [SerializeField] private GameObject _root;
-        [SerializeField] private TMP_Text _titleText;
-        [SerializeField] private TMP_Text _summaryText;
+        [SerializeField] private Text _titleText;
+        [SerializeField] private Text _summaryText;
         [SerializeField] private Button _retryButton;
         [SerializeField] private Button _menuButton;
         [SerializeField] private string _menuSceneName = "MainMenu";

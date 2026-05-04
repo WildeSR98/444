@@ -1,5 +1,5 @@
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Vymesy.Core;
 using Vymesy.Player;
 using Vymesy.Utils;
@@ -8,9 +8,9 @@ namespace Vymesy.UI
 {
     public class HUDController : MonoBehaviour
     {
-        [SerializeField] private TMP_Text _goldText;
-        [SerializeField] private TMP_Text _waveText;
-        [SerializeField] private TMP_Text _timerText;
+        [SerializeField] private Text _goldText;
+        [SerializeField] private Text _waveText;
+        [SerializeField] private Text _timerText;
         [SerializeField] private HealthBar _healthBar;
 
         private void OnEnable()

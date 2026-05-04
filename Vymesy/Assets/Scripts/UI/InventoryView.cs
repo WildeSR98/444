@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Vymesy.Inventory;
@@ -13,7 +12,7 @@ namespace Vymesy.UI
         {
             public Image Icon;
             public Image Frame;
-            public TMP_Text Name;
+            public Text Name;
         }
 
         [SerializeField] private InventoryManager _inventory;
