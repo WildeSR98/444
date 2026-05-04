@@ -70,7 +70,7 @@ namespace Vymesy.Enemies
         public void SetTarget(Transform target) => _target = target;
 
         /// <summary>
-        /// Runtime-friendly registration of an enemy entry. Used by DemoBootstrap and tools
+        /// Runtime-friendly registration of an enemy entry. Used by VymesyDemoBootstrap and tools
         /// that build the enemy roster procedurally instead of via the inspector.
         /// </summary>
         public void AddEntry(EnemyDefinition def, GameObject prefab, int spawnWeight = 10, int minWave = 0, int prewarm = 8)
