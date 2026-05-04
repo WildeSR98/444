@@ -22,7 +22,7 @@ namespace Vymesy.Enemies
         {
             if (_renderer == null) return;
             if (def != null && def.Sprite != null) _renderer.sprite = def.Sprite;
-            _baseColor = def != null ? def.Tint : Color.white;
+            _baseColor = Color.white;
             _renderer.color = _baseColor;
             _flashUntil = 0f;
         }

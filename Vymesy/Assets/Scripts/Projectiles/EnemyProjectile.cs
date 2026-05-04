@@ -22,6 +22,12 @@ namespace Vymesy.Projectiles
         private DamageInfo _damage;
         private string _poolKey;
         private ProjectilesManager _owner;
+        private TrailRenderer _trail;
+
+        private void Awake()
+        {
+            _trail = GetComponent<TrailRenderer>();
+        }
 
         public void Configure(ProjectilesManager owner, string poolKey, Vector2 dir, float speed, float range, in DamageInfo dmg)
         {
@@ -32,10 +38,21 @@ namespace Vymesy.Projectiles
             _travelled = 0f;
             _damage = dmg;
             transform.right = _velocity.normalized;
+            if (_trail != null)
+            {
+                _trail.Clear();
+                _trail.emitting = true;
+            }
         }
 
         public void OnSpawnedFromPool() { }
-        public void OnReturnedToPool() { }
+        public void OnReturnedToPool()
+        {
+            if (_trail == null) _trail = GetComponent<TrailRenderer>();
+            if (_trail == null) return;
+            _trail.emitting = false;
+            _trail.Clear();
+        }
 
         private void Update()
         {

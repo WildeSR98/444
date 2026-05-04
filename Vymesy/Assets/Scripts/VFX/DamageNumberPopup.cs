@@ -36,7 +36,7 @@ namespace Vymesy.VFX
             Color color = info.IsCritical ? new Color(1f, 0.85f, 0.3f) : new Color(1f, 0.9f, 0.9f);
             for (int i = 0; i < ticks; i++)
             {
-                Tick.Spawn(transform.position + new Vector3(i * 0.2f - ticks * 0.1f, 0.5f, 0f), color, _riseSpeed, _life);
+                Tick.Spawn(transform.position + new Vector3(i * 0.2f - ticks * 0.1f, 0.5f, 0f), color, _riseSpeed, _life, info.IsCritical);
             }
         }
 
@@ -48,13 +48,13 @@ namespace Vymesy.VFX
             private SpriteRenderer _sr;
             private Color _baseColor;
 
-            public static void Spawn(Vector3 origin, Color color, float rise, float life)
+            public static void Spawn(Vector3 origin, Color color, float rise, float life, bool critical)
             {
                 var go = new GameObject("HitTick");
                 go.transform.position = origin;
-                go.transform.localScale = Vector3.one * 0.2f;
+                go.transform.localScale = Vector3.one * (critical ? 0.28f : 0.2f);
                 var sr = go.AddComponent<SpriteRenderer>();
-                sr.sprite = DemoSprites.Get(DemoSprites.Shape.Diamond, color, 8);
+                sr.sprite = DemoSprites.Get(critical ? DemoSprites.Shape.Cross : DemoSprites.Shape.Diamond, color, 8);
                 sr.sortingOrder = 7;
                 var t = go.AddComponent<Tick>();
                 t._sr = sr;
