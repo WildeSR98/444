@@ -7,6 +7,7 @@ namespace Vymesy.Enemies
     {
         [SerializeField] private SpriteRenderer _renderer;
         [SerializeField] private float _hitFlashSeconds = 0.08f;
+        [SerializeField] private Color _flashColor = new Color(1f, 0.62f, 0.62f);
 
         private Color _baseColor;
         private float _flashUntil;
@@ -22,7 +23,7 @@ namespace Vymesy.Enemies
         {
             if (_renderer == null) return;
             if (def != null && def.Sprite != null) _renderer.sprite = def.Sprite;
-            _baseColor = def != null ? def.Tint : Color.white;
+            _baseColor = Color.white;
             _renderer.color = _baseColor;
             _flashUntil = 0f;
         }
@@ -30,7 +31,7 @@ namespace Vymesy.Enemies
         public void Flash()
         {
             if (_renderer == null) return;
-            _renderer.color = Color.white;
+            _renderer.color = _flashColor;
             _flashUntil = Time.time + _hitFlashSeconds;
         }
 

@@ -38,7 +38,7 @@ namespace Vymesy.Demo
 
         public GameObject MakeProjectilePrefab(string poolKey, Color color)
         {
-            var go = NewProjectileSkeleton(poolKey, color, DemoSprites.Shape.Square, 16);
+            var go = NewProjectileSkeleton(poolKey, color, DemoSprites.Shape.Bolt);
             var p = go.AddComponent<Projectile>();
             p.Pierce = 0;
             return go;
@@ -46,14 +46,14 @@ namespace Vymesy.Demo
 
         public GameObject MakeHomingProjectilePrefab(string poolKey, Color color)
         {
-            var go = NewProjectileSkeleton(poolKey, color, DemoSprites.Shape.Diamond, 18);
+            var go = NewProjectileSkeleton(poolKey, color, DemoSprites.Shape.Needle);
             go.AddComponent<HomingProjectile>();
             return go;
         }
 
         public GameObject MakeOrbitProjectilePrefab(string poolKey, Color color)
         {
-            var go = NewProjectileSkeleton(poolKey, color, DemoSprites.Shape.Circle, 14);
+            var go = NewProjectileSkeleton(poolKey, color, DemoSprites.Shape.Orb);
             go.AddComponent<OrbitProjectile>();
             return go;
         }
@@ -64,18 +64,28 @@ namespace Vymesy.Demo
         /// </summary>
         public GameObject MakeEnemyProjectilePrefab(string poolKey, Color color)
         {
-            var go = NewProjectileSkeleton(poolKey, color, DemoSprites.Shape.Diamond, 16);
+            var go = NewProjectileSkeleton(poolKey, color, DemoSprites.Shape.EnemyBolt);
             go.AddComponent<EnemyProjectile>();
             return go;
         }
 
-        private static GameObject NewProjectileSkeleton(string name, Color color, DemoSprites.Shape shape, int size)
+        private static GameObject NewProjectileSkeleton(string name, Color color, DemoSprites.Shape shape)
         {
             var go = new GameObject(name);
             go.SetActive(false);
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = DemoSprites.Get(shape, color, size);
+            sr.sprite = DemoSprites.Get(shape, color);
             sr.sortingOrder = 4;
+            go.AddComponent<SpritePulse>();
+            var trail = go.AddComponent<TrailRenderer>();
+            trail.time = 0.16f;
+            trail.startWidth = 0.22f;
+            trail.endWidth = 0f;
+            trail.material = new Material(Shader.Find("Sprites/Default"));
+            trail.startColor = new Color(color.r, color.g, color.b, 0.8f);
+            trail.endColor = new Color(color.r, color.g, color.b, 0f);
+            trail.sortingOrder = 3;
+            trail.emitting = false;
             return go;
         }
 
@@ -86,16 +96,16 @@ namespace Vymesy.Demo
             var list = new List<EnemyEntry>();
 
             list.Add(BuildEnemy("Common Vymes", EnemyType.Common, hp: 18, speed: 2.0f, dmg: 6,
-                tint: new Color(0.35f, 0.25f, 0.25f), shape: DemoSprites.Shape.Circle, gold: 1, weight: 60, minWave: 0));
+                tint: new Color(0.38f, 0.28f, 0.25f), shape: DemoSprites.Shape.CommonVymes, gold: 1, weight: 60, minWave: 0));
 
             list.Add(BuildEnemy("Stalker Vymes", EnemyType.Stalker, hp: 12, speed: 3.4f, dmg: 5,
-                tint: new Color(0.4f, 0.15f, 0.45f), shape: DemoSprites.Shape.Diamond, gold: 2, weight: 30, minWave: 1));
+                tint: new Color(0.42f, 0.12f, 0.52f), shape: DemoSprites.Shape.StalkerVymes, gold: 2, weight: 30, minWave: 1));
 
             list.Add(BuildEnemy("Brute Vymes", EnemyType.Brute, hp: 60, speed: 1.4f, dmg: 14,
-                tint: new Color(0.45f, 0.1f, 0.1f), shape: DemoSprites.Shape.Square, gold: 3, weight: 18, minWave: 2));
+                tint: new Color(0.5f, 0.12f, 0.1f), shape: DemoSprites.Shape.BruteVymes, gold: 3, weight: 18, minWave: 2));
 
             var wretch = BuildEnemy("Wretch Vymes", EnemyType.Wretch, hp: 25, speed: 1.6f, dmg: 4,
-                tint: new Color(0.2f, 0.55f, 0.25f), shape: DemoSprites.Shape.Cross, gold: 3, weight: 14, minWave: 3);
+                tint: new Color(0.18f, 0.58f, 0.25f), shape: DemoSprites.Shape.WretchVymes, gold: 3, weight: 14, minWave: 3);
             wretch.Definition.IsRanged = true;
             wretch.Definition.AttackRange = 6f;
             wretch.Definition.AttackInterval = 1.6f;
@@ -104,16 +114,16 @@ namespace Vymesy.Demo
             list.Add(wretch);
 
             var elite = BuildEnemy("Elite Vymes", EnemyType.Elite, hp: 200, speed: 1.8f, dmg: 18,
-                tint: new Color(0.85f, 0.5f, 1f), shape: DemoSprites.Shape.Square, gold: 12, weight: 5, minWave: 5);
+                tint: new Color(0.82f, 0.45f, 1f), shape: DemoSprites.Shape.EliteVymes, gold: 12, weight: 5, minWave: 5);
             elite.Definition.SoulShardDropChance = 0.5f;
             list.Add(elite);
 
             var boss = BuildEnemy("Boss Vymes", EnemyType.Boss, hp: 1200, speed: 1.0f, dmg: 30,
-                tint: new Color(1f, 0.25f, 0.2f), shape: DemoSprites.Shape.Cross, gold: 80, weight: 1, minWave: 10);
+                tint: new Color(1f, 0.22f, 0.16f), shape: DemoSprites.Shape.BossVymes, gold: 80, weight: 1, minWave: 10);
             list.Add(boss);
 
             var shiny = BuildEnemy("Shiny Vymes", EnemyType.Shiny, hp: 35, speed: 4.5f, dmg: 6,
-                tint: new Color(1f, 0.95f, 0.4f), shape: DemoSprites.Shape.Diamond, gold: 25, weight: 2, minWave: 1);
+                tint: new Color(1f, 0.92f, 0.25f), shape: DemoSprites.Shape.ShinyVymes, gold: 25, weight: 2, minWave: 1);
             shiny.Definition.ItemDropChance = 1f;
             list.Add(shiny);
 
@@ -138,8 +148,18 @@ namespace Vymesy.Demo
             prefab.SetActive(false);
             var sr = prefab.AddComponent<SpriteRenderer>();
             sr.sprite = def.Sprite;
-            sr.color = tint;
+            sr.color = Color.white;
             sr.sortingOrder = 3;
+            AddShadow(prefab.transform, 0.46f, 0.18f, 2);
+            prefab.transform.localScale = type switch
+            {
+                EnemyType.Stalker => Vector3.one * 0.82f,
+                EnemyType.Brute => Vector3.one * 1.28f,
+                EnemyType.Elite => Vector3.one * 1.35f,
+                EnemyType.Boss => Vector3.one * 2.1f,
+                EnemyType.Shiny => Vector3.one * 0.9f,
+                _ => Vector3.one,
+            };
 
             var rb = prefab.AddComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
@@ -163,11 +183,9 @@ namespace Vymesy.Demo
             }
             prefab.AddComponent<EnemyView>();
             prefab.AddComponent<EnemyController>();
-            // Death VFX hook (created in step 4 of the demo content).
             prefab.AddComponent<DamageFlash>();
             prefab.AddComponent<DeathBurst>();
             prefab.AddComponent<DamageNumberPopup>();
-            // Bosses and elites get an outlined silhouette to stand out on screen.
             if (type == EnemyType.Boss || type == EnemyType.Elite || type == EnemyType.Shiny)
             {
                 var outline = prefab.AddComponent<SpriteOutlineEffect>();
@@ -289,7 +307,7 @@ namespace Vymesy.Demo
             aoe.TickInterval = 1.4f;
             aoe.Range = 4.5f;
             aoe.Damage = 10f;
-            aoe.Prefab = MakeTowerPrefab("Алтарь возмездия", typeof(AoETower), new Color(1f, 0.5f, 0.4f));
+            aoe.Prefab = MakeTowerPrefab("Алтарь возмездия", typeof(AoETower), new Color(1f, 0.5f, 0.4f), DemoSprites.Shape.TowerAltar);
             list.Add(new TowerCatalogEntry { Definition = aoe, Weight = 30 });
 
             var circle = ScriptableObject.CreateInstance<TowerDefinition>();
@@ -299,7 +317,7 @@ namespace Vymesy.Demo
             circle.TickInterval = 0.8f;
             circle.Range = 6f;
             circle.Damage = 7f;
-            circle.Prefab = MakeTowerPrefab("Лучник Света", typeof(CircleTower), new Color(0.95f, 0.95f, 0.6f));
+            circle.Prefab = MakeTowerPrefab("Лучник Света", typeof(CircleTower), new Color(0.95f, 0.95f, 0.6f), DemoSprites.Shape.TowerArcher);
             list.Add(new TowerCatalogEntry { Definition = circle, Weight = 30 });
 
             var poison = ScriptableObject.CreateInstance<TowerDefinition>();
@@ -309,7 +327,7 @@ namespace Vymesy.Demo
             poison.TickInterval = 0.5f;
             poison.Range = 3.5f;
             poison.Damage = 3f;
-            poison.Prefab = MakeTowerPrefab("Тлен", typeof(PoisonTower), new Color(0.4f, 0.85f, 0.3f));
+            poison.Prefab = MakeTowerPrefab("Тлен", typeof(PoisonTower), new Color(0.4f, 0.85f, 0.3f), DemoSprites.Shape.TowerPoison);
             list.Add(new TowerCatalogEntry { Definition = poison, Weight = 20 });
 
             var lightning = ScriptableObject.CreateInstance<TowerDefinition>();
@@ -319,7 +337,7 @@ namespace Vymesy.Demo
             lightning.TickInterval = 1.2f;
             lightning.Range = 5f;
             lightning.Damage = 6f;
-            lightning.Prefab = MakeTowerPrefab("Шторм", typeof(LightningTower), new Color(0.55f, 0.85f, 1f));
+            lightning.Prefab = MakeTowerPrefab("Шторм", typeof(LightningTower), new Color(0.55f, 0.85f, 1f), DemoSprites.Shape.TowerStorm);
             list.Add(new TowerCatalogEntry { Definition = lightning, Weight = 18 });
 
             var aura = ScriptableObject.CreateInstance<TowerDefinition>();
@@ -329,7 +347,7 @@ namespace Vymesy.Demo
             aura.TickInterval = 0.4f;
             aura.Range = 2.8f;
             aura.Damage = 1.2f;
-            aura.Prefab = MakeTowerPrefab("Священная аура", typeof(AuraTower), new Color(0.85f, 0.95f, 1f));
+            aura.Prefab = MakeTowerPrefab("Священная аура", typeof(AuraTower), new Color(0.85f, 0.95f, 1f), DemoSprites.Shape.TowerAura);
             list.Add(new TowerCatalogEntry { Definition = aura, Weight = 22 });
 
             var gold = ScriptableObject.CreateInstance<TowerDefinition>();
@@ -338,20 +356,35 @@ namespace Vymesy.Demo
             gold.DisplayName = "Сундук";
             gold.TickInterval = 2f;
             gold.GoldPerTick = 1;
-            gold.Prefab = MakeTowerPrefab("Сундук", typeof(GoldTower), new Color(1f, 0.85f, 0.2f));
+            gold.Prefab = MakeTowerPrefab("Сундук", typeof(GoldTower), new Color(1f, 0.85f, 0.2f), DemoSprites.Shape.Chest);
             list.Add(new TowerCatalogEntry { Definition = gold, Weight = 10 });
 
             return list;
         }
 
-        private GameObject MakeTowerPrefab(string name, System.Type towerType, Color tint)
+        private GameObject MakeTowerPrefab(string name, System.Type towerType, Color tint, DemoSprites.Shape shape)
         {
             var go = new GameObject(name);
+            go.SetActive(false);
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = DemoSprites.Get(DemoSprites.Shape.Square, tint, 28);
+            sr.sprite = DemoSprites.Get(shape, tint);
             sr.sortingOrder = 2;
+            AddShadow(go.transform, 0.56f, 0.16f, 1);
+            go.AddComponent<SpritePulse>();
             go.AddComponent(towerType);
             return go;
+        }
+
+        private static void AddShadow(Transform parent, float width, float height, int sortingOrder)
+        {
+            var go = new GameObject("Shadow");
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = new Vector3(0f, -0.24f, 0f);
+            go.transform.localScale = new Vector3(width, height, 1f);
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = DemoSprites.Get(DemoSprites.Shape.Circle, new Color(0f, 0f, 0f, 0.45f));
+            sr.color = new Color(0f, 0f, 0f, 0.45f);
+            sr.sortingOrder = sortingOrder;
         }
 
         // ---------- Items ----------

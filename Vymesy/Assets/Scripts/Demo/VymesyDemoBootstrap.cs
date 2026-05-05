@@ -53,6 +53,7 @@ namespace Vymesy.Demo
             var rm = _game.RunManager;
             BuildAllManagers(rm);
             BuildContent(rm);
+            BuildArenaDecor();
             BuildHud();
 
             if (_autoStartRun) rm.StartRun();
@@ -68,8 +69,10 @@ namespace Vymesy.Demo
         {
             var go = new GameObject("Player");
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = DemoSprites.Get(DemoSprites.Shape.Circle, new Color(0.95f, 0.92f, 0.7f));
+            sr.sprite = DemoSprites.Get(DemoSprites.Shape.Player, new Color(0.95f, 0.92f, 0.7f));
             sr.sortingOrder = 5;
+            AddPlayerLight(go.transform);
+            AddShadow(go.transform, 0.62f, 0.18f, 2);
 
             var rb = go.AddComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
@@ -89,6 +92,29 @@ namespace Vymesy.Demo
             return pm;
         }
 
+        private static void AddPlayerLight(Transform parent)
+        {
+            var go = new GameObject("PlayerLight");
+            go.transform.SetParent(parent, false);
+            go.transform.localScale = Vector3.one * 2.8f;
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = DemoSprites.Get(DemoSprites.Shape.Circle, new Color(1f, 0.88f, 0.35f, 0.28f));
+            sr.color = new Color(1f, 0.88f, 0.35f, 0.22f);
+            sr.sortingOrder = 1;
+        }
+
+        private static void AddShadow(Transform parent, float width, float height, int sortingOrder)
+        {
+            var go = new GameObject("Shadow");
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = new Vector3(0f, -0.28f, 0f);
+            go.transform.localScale = new Vector3(width, height, 1f);
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = DemoSprites.Get(DemoSprites.Shape.Circle, new Color(0f, 0f, 0f, 0.45f));
+            sr.color = new Color(0f, 0f, 0f, 0.45f);
+            sr.sortingOrder = sortingOrder;
+        }
+
         private void BuildCameraRig(Transform target)
         {
             var rig = new GameObject("CameraRig");
@@ -96,7 +122,6 @@ namespace Vymesy.Demo
             follow.SetTarget(target);
             _cameraFollow = follow;
 
-            // Reuse the existing main camera when present, otherwise build one.
             Camera cam = Camera.main;
             if (cam == null)
             {
@@ -117,10 +142,6 @@ namespace Vymesy.Demo
         {
             rm.gameObject.AddComponent<LootDropper>();
 
-            // SkillsManager / ProjectilesManager / Towers / Inventory / Gems are already
-            // created lazily inside RunManager.EnsureManagers via SpawnIfMissing,
-            // but they are added on RunManager.StartRun(). To configure them up-front
-            // we create them now so we can register content before the run begins.
             EnsureChild<SkillsManager>(rm);
             EnsureChild<TowersManager>(rm);
             EnsureChild<InventoryManager>(rm);
@@ -213,6 +234,26 @@ namespace Vymesy.Demo
             var ctrl = _player != null ? _player.GetComponent<PlayerController>() : null;
             var joystick = hudGo.GetComponent<TouchJoystick>();
             if (ctrl != null && joystick != null) ctrl.TouchInput = joystick;
+        }
+
+        private void BuildArenaDecor()
+        {
+            var root = new GameObject("ArenaDecor");
+            var rng = new System.Random(444);
+            for (int i = 0; i < 90; i++)
+            {
+                float angle = (float)rng.NextDouble() * Mathf.PI * 2f;
+                float radius = 4f + (float)rng.NextDouble() * 24f;
+                var go = new GameObject("AshStone");
+                go.transform.SetParent(root.transform, false);
+                go.transform.position = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0f);
+                go.transform.localScale = Vector3.one * Mathf.Lerp(0.16f, 0.48f, (float)rng.NextDouble());
+                var sr = go.AddComponent<SpriteRenderer>();
+                sr.sprite = DemoSprites.Get(i % 3 == 0 ? DemoSprites.Shape.Diamond : DemoSprites.Shape.Circle,
+                    new Color(0.14f, 0.13f, 0.16f, 0.9f), 16);
+                sr.color = new Color(0.14f, 0.13f, 0.16f, 0.55f);
+                sr.sortingOrder = 0;
+            }
         }
     }
 }

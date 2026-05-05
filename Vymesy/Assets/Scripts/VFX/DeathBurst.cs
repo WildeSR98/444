@@ -11,17 +11,19 @@ namespace Vymesy.VFX
     [RequireComponent(typeof(EnemyHealth))]
     public class DeathBurst : MonoBehaviour
     {
-        [SerializeField] private int _particles = 8;
-        [SerializeField] private float _speed = 4f;
-        [SerializeField] private float _lifetime = 0.45f;
-        [SerializeField] private float _scale = 0.18f;
+        [SerializeField] private int _particles = 14;
+        [SerializeField] private float _speed = 5.5f;
+        [SerializeField] private float _lifetime = 0.62f;
+        [SerializeField] private float _scale = 0.16f;
 
         private EnemyHealth _health;
+        private EnemyController _controller;
         private SpriteRenderer _renderer;
 
         private void Awake()
         {
             _health = GetComponent<EnemyHealth>();
+            _controller = GetComponent<EnemyController>();
             _renderer = GetComponentInChildren<SpriteRenderer>();
         }
 
@@ -37,13 +39,14 @@ namespace Vymesy.VFX
 
         private void HandleDied()
         {
-            Color color = _renderer != null ? _renderer.color : Color.white;
+            Color color = _controller != null && _controller.Definition != null ? _controller.Definition.Tint :
+                (_renderer != null ? _renderer.color : Color.white);
             Vector3 origin = transform.position;
             for (int i = 0; i < _particles; i++)
             {
                 float angle = (i / (float)_particles) * Mathf.PI * 2f + Random.value * 0.3f;
                 Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-                Particle.Spawn(origin, dir * _speed * Random.Range(0.7f, 1.2f), _lifetime, _scale, color);
+                Particle.Spawn(origin, dir * _speed * Random.Range(0.7f, 1.2f), _lifetime, _scale, color, i % 2 == 0);
             }
         }
 
@@ -56,13 +59,13 @@ namespace Vymesy.VFX
             private SpriteRenderer _sr;
             private Color _baseColor;
 
-            public static void Spawn(Vector3 origin, Vector2 velocity, float life, float scale, Color color)
+            public static void Spawn(Vector3 origin, Vector2 velocity, float life, float scale, Color color, bool spark)
             {
                 var go = new GameObject("DeathParticle");
                 go.transform.position = origin;
                 go.transform.localScale = Vector3.one * scale;
                 var sr = go.AddComponent<SpriteRenderer>();
-                sr.sprite = DemoSprites.Get(DemoSprites.Shape.Circle, color, 8);
+                sr.sprite = DemoSprites.Get(spark ? DemoSprites.Shape.Diamond : DemoSprites.Shape.Circle, color, 8);
                 sr.sortingOrder = 6;
                 var p = go.AddComponent<Particle>();
                 p._sr = sr;
